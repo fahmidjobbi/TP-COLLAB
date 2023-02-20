@@ -1,0 +1,148 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr 14 01:14:11 2022
+
+@author: Ala Arboun
+"""
+import matplotlib.pyplot as plt
+from PIL import Image
+from numpy import array
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import glob
+from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn import svm
+
+"""import glob
+from PIL import Image
+
+
+images=glob.glob("*.jpg")
+for image in images:
+    img = Image.open(image)
+    img1 = img.resize(50,50)
+    img1.save("newfolder\\"+image)    """
+    
+
+path=glob.glob("C:/ProjetBI/yalefaces/yalefaces/*")
+img = Image.open("C:/Tp1_ML/data/yalefaces/yalefaces/subject02.centerlight")
+ar = array(img)
+#v1=ar.reshape(ar.shape[0]*ar.shape[1])
+v1=ar.flatten()
+image=[]
+for i in path:
+    x=Image.open(i)
+    ar=array(x)
+    v1=ar.flatten()
+    image.append(v1)
+images=np.array(image)
+
+label=[]
+for i in range(1,16):
+    for j in range(11):
+        label.append(i)
+label=np.array(label)
+
+
+""" Réduction de dimension en utilisant PCA et classification par SVM"""   
+from sklearn.decomposition import PCA
+pca=PCA(n_components=165)
+C1=pca.fit_transform(images)
+#print(pca.explained_variance_ratio_)
+#print(pca.singular_values_)
+
+from sklearn.model_selection import train_test_split
+train_img, test_img, train_lbl, test_lbl = train_test_split(C1,label, test_size=0.33, shuffle=True, random_state=0)
+model=svm.SVC(kernel='linear' , C=1)
+model.fit(train_img,train_lbl)
+pred=model.predict(test_img)
+
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+CM_1 = confusion_matrix(test_lbl,pred)
+import matplotlib.pyplot as plt
+import seaborn as sns
+class_names1=[0, 1] # name of classes
+fig1, ax1 = plt.subplots()
+tick_marks1 = np.arange(len(class_names1))
+plt.xticks(tick_marks1, class_names1)
+plt.yticks(tick_marks1, class_names1)
+tick_marks1 = np.arange(len(class_names1))
+plt.xticks(tick_marks1, class_names1)
+plt.yticks(tick_marks1, class_names1)
+
+
+sns.heatmap(CM_1, annot=True, cmap="CMRmap" ,fmt='g')
+plt.tight_layout()
+plt.title('Confusion matrix ', y=1.1)
+plt.ylabel('Actual label')
+plt.xlabel('Predicted label')
+
+
+from sklearn.metrics import accuracy_score
+Acc=accuracy_score(test_lbl,pred)*100
+print(Acc)
+
+"""************************Réduction de dimension et classification en utilisant  LDA********************"""
+
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+model_lda=LDA()
+X2=model_lda.fit_transform(images,label)
+
+
+from sklearn.model_selection import train_test_split
+train_img, test_img, train_lbl, test_lbl = train_test_split(X2,label, test_size=0.33, shuffle=True, random_state=0)
+
+model_lda.fit(train_img,train_lbl)
+pred1=model_lda.predict(test_img)
+
+from sklearn.metrics import accuracy_score
+Acc=accuracy_score(test_lbl,pred1)*100
+print(Acc)
+
+"""confusion_matrix"""
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+CM_2 = confusion_matrix(test_lbl,pred1)
+import matplotlib.pyplot as plt
+import seaborn as sns
+class_names1=[0, 1] # name of classes
+fig1, ax1 = plt.subplots()
+tick_marks1 = np.arange(len(class_names1))
+plt.xticks(tick_marks1, class_names1)
+plt.yticks(tick_marks1, class_names1)
+tick_marks1 = np.arange(len(class_names1))
+plt.xticks(tick_marks1, class_names1)
+plt.yticks(tick_marks1, class_names1)
+
+
+sns.heatmap(CM_2, annot=True, cmap="CMRmap" ,fmt='g')
+plt.tight_layout()
+plt.title('Confusion matrix LDA ', y=1.1)
+plt.ylabel('Actual label')
+plt.xlabel('Predicted label')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
