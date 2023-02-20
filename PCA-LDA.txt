@@ -2,7 +2,7 @@
 """
 Created on Thu Apr 14 01:14:11 2022
 
-@author: Ala Arboun
+
 """
 import matplotlib.pyplot as plt
 from PIL import Image
